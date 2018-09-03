@@ -24,7 +24,7 @@ public class ConnectToCar extends AppCompatActivity {
     BluetoothDevice mBluetoothDevice;
     private final int REQUEST_ENABLE_BT = 1;
     private final String MY_DEVICE_NAME= "";
-    private final String LOG_TAG = this.getLocalClassName();
+    private final String LOG_TAG = "ConnectToCar";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,5 +118,10 @@ public class ConnectToCar extends AppCompatActivity {
         } else {
             Log.d("ConnectToCar", "User doesn't want bluetooth on");
         }
+    }
+
+    public void startStreaming(View view) {
+        Intent intent = new Intent(this, Streaming.class);
+        startActivity(intent);
     }
 }
