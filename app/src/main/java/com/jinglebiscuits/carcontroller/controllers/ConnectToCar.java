@@ -1,4 +1,4 @@
-package com.jinglebiscuits.carcontroller;
+package com.jinglebiscuits.carcontroller.controllers;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -6,41 +6,81 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
+import com.jinglebiscuits.carcontroller.R;
+import com.jinglebiscuits.carcontroller.model.ConnectThread;
+
+import java.io.IOException;
 import java.util.Set;
+import java.util.UUID;
 
 public class ConnectToCar extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter;
     BluetoothDevice mBluetoothDevice;
     private final int REQUEST_ENABLE_BT = 1;
-    private final String MY_DEVICE_NAME= "";
+    private final String MY_DEVICE_NAME = "HC-05";
+    private final String BT_ADDRESS = "98:D3:31:FD:89:8B";
     private final String LOG_TAG = "ConnectToCar";
+
+    private ConnectThread mConnectThread;
+
+    private View mButtonLayout;
+    private Button mButtonLeft, mButtonRight, mButtonForward, mButtonBackward, mButtonStop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect_to_car);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mButtonLayout = findViewById(R.id.button_layout);
+        mButtonLayout.setVisibility(View.GONE);
+        mButtonLeft = findViewById(R.id.button_left);
+        mButtonRight = findViewById(R.id.button_right);
+        mButtonForward = findViewById(R.id.button_forward);
+        mButtonBackward = findViewById(R.id.button_backward);
+        mButtonStop = findViewById(R.id.button_stop);
 
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                connectToCar();
+        mButtonLeft.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(8);
             }
         });
 
+        mButtonRight.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(1);
+            }
+        });
+
+        mButtonForward.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(9);
+            }
+        });
+
+        mButtonBackward.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(6);
+            }
+        });
+
+        mButtonStop.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(0);
+            }
+        });
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             new AlertDialog.Builder(this).setTitle("No bluetooth")
@@ -51,6 +91,29 @@ public class ConnectToCar extends AppCompatActivity {
                   }
               })
               .show();
+        }
+    }
+
+    public void connectToCar(View view) {
+        if (mConnectThread != null && mConnectThread.isConnected()) {
+            mConnectThread.cancel();
+            return;
+        }
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        } else {
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            if (isConnected(pairedDevices)) {
+                mButtonLayout.setVisibility(View.VISIBLE);
+                if (mConnectThread != null) {
+                    mConnectThread.cancel();
+                }
+                mConnectThread = new ConnectThread(mBluetoothAdapter, mBluetoothDevice);
+                mConnectThread.start();
+            } else {
+                mButtonLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -68,6 +131,12 @@ public class ConnectToCar extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    public void sendMessage(int message) {
+        if (mConnectThread != null) {
+            mConnectThread.write(new byte[] {(byte) message});
+        }
     }
 
     @Override
@@ -92,18 +161,6 @@ public class ConnectToCar extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void connectToCar() {
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-            if (isConnected(pairedDevices)) {
-
-            }
-        }
-    }
-
     /**
      * Dispatch incoming result to the correct fragment.
      *
@@ -114,7 +171,7 @@ public class ConnectToCar extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_ENABLE_BT) {
-            connectToCar();
+
         } else {
             Log.d("ConnectToCar", "User doesn't want bluetooth on");
         }

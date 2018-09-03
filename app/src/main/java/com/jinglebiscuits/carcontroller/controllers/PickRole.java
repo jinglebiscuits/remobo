@@ -1,9 +1,11 @@
-package com.jinglebiscuits.carcontroller;
+package com.jinglebiscuits.carcontroller.controllers;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import com.jinglebiscuits.carcontroller.R;
 
 public class PickRole extends AppCompatActivity {
 

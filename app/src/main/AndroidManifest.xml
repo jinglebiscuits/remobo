@@ -12,12 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ConnectToCar"
+            android:name=".controllers.ConnectToCar"
             android:label="@string/app_name"
-            android:parentActivityName=".PickRole"
+            android:parentActivityName=".controllers.PickRole"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".PickRole">
+        <activity android:name=".controllers.PickRole">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -25,14 +25,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Streaming"
+            android:name=".controllers.Streaming"
             android:label="@string/title_activity_streaming"
-            android:parentActivityName=".ConnectToCar"
+            android:parentActivityName=".controllers.ConnectToCar"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="userLandscape">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.jinglebiscuits.carcontroller.ConnectToCar"/>
+                android:value="com.jinglebiscuits.carcontroller.controllers.ConnectToCar"/>
         </activity>
     </application>
 
