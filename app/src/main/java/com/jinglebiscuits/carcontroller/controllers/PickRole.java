@@ -19,4 +19,9 @@ public class PickRole extends AppCompatActivity {
         Intent intent = new Intent(this, ConnectToCar.class);
         startActivity(intent);
     }
+
+    public void pickDriver(View view) {
+        Intent intent = new Intent(this, Driving.class);
+        startActivity(intent);
+    }
 }

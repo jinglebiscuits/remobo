@@ -1,26 +1,26 @@
 package com.jinglebiscuits.carcontroller.controllers;
 
-import android.opengl.GLSurfaceView;
-import android.support.v7.app.AppCompatActivity;
-import android.support.annotation.NonNull;
 import android.Manifest;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.FrameLayout;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.jinglebiscuits.carcontroller.R;
 import com.jinglebiscuits.carcontroller.model.opentok.OpenTokConfig;
 import com.jinglebiscuits.carcontroller.model.opentok.WebServiceCoordinator;
-import com.opentok.android.Session;
-import com.opentok.android.Stream;
-import com.opentok.android.Publisher;
-import com.opentok.android.PublisherKit;
-import com.opentok.android.Subscriber;
 import com.opentok.android.BaseVideoRenderer;
 import com.opentok.android.OpentokError;
+import com.opentok.android.Publisher;
+import com.opentok.android.PublisherKit;
+import com.opentok.android.Session;
+import com.opentok.android.Stream;
+import com.opentok.android.Subscriber;
 import com.opentok.android.SubscriberKit;
 
 import java.util.List;
@@ -29,15 +29,14 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-
-public class Streaming extends AppCompatActivity
+public class Driving extends AppCompatActivity
   implements EasyPermissions.PermissionCallbacks,
   WebServiceCoordinator.Listener,
   Session.SessionListener,
   PublisherKit.PublisherListener,
   SubscriberKit.SubscriberListener{
 
-    private static final String LOG_TAG = Streaming.class.getSimpleName();
+    private static final String LOG_TAG = Driving.class.getSimpleName();
     private static final int RC_SETTINGS_SCREEN_PERM = 123;
     private static final int RC_VIDEO_APP_PERM = 124;
 
@@ -61,8 +60,8 @@ public class Streaming extends AppCompatActivity
         setContentView(R.layout.activity_streaming);
 
         // initialize view objects from your layout
-        mPublisherViewContainer = (FrameLayout)findViewById(R.id.publisher_container);
-        mSubscriberViewContainer = (FrameLayout)findViewById(R.id.subscriber_container);
+        mPublisherViewContainer = findViewById(R.id.publisher_container);
+        mSubscriberViewContainer = findViewById(R.id.subscriber_container);
 
         requestPermissions();
     }
@@ -296,7 +295,7 @@ public class Streaming extends AppCompatActivity
           .setMessage(errorMessage)
           .setPositiveButton("ok", new DialogInterface.OnClickListener() {
               public void onClick(DialogInterface dialog, int which) {
-                  Streaming.this.finish();
+                  Driving.this.finish();
               }
           })
           .setIcon(android.R.drawable.ic_dialog_alert)

@@ -3,6 +3,14 @@
     package="com.jinglebiscuits.carcontroller">
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:allowBackup="true"
@@ -33,6 +41,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.jinglebiscuits.carcontroller.controllers.ConnectToCar"/>
+        </activity>
+
+        <activity
+            android:name=".controllers.Driving"
+            android:label="@string/title_activity_driving"
+            android:parentActivityName=".controllers.PickRole"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="userLandscape">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.jinglebiscuits.carcontroller.controllers.PickRole"/>
         </activity>
     </application>
 
