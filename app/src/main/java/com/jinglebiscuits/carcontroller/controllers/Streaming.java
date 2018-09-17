@@ -9,11 +9,13 @@ import android.util.Log;
 import android.widget.FrameLayout;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.jinglebiscuits.carcontroller.R;
 import com.jinglebiscuits.carcontroller.model.opentok.OpenTokConfig;
 import com.jinglebiscuits.carcontroller.model.opentok.WebServiceCoordinator;
+import com.opentok.android.Connection;
 import com.opentok.android.Session;
 import com.opentok.android.Stream;
 import com.opentok.android.Publisher;
@@ -35,7 +37,8 @@ public class Streaming extends AppCompatActivity
   WebServiceCoordinator.Listener,
   Session.SessionListener,
   PublisherKit.PublisherListener,
-  SubscriberKit.SubscriberListener{
+  SubscriberKit.SubscriberListener,
+  Session.SignalListener {
 
     private static final String LOG_TAG = Streaming.class.getSimpleName();
     private static final int RC_SETTINGS_SCREEN_PERM = 123;
@@ -49,7 +52,6 @@ public class Streaming extends AppCompatActivity
     private Publisher mPublisher;
     private Subscriber mSubscriber;
 
-    private FrameLayout mPublisherViewContainer;
     private FrameLayout mSubscriberViewContainer;
 
     @Override
@@ -61,7 +63,6 @@ public class Streaming extends AppCompatActivity
         setContentView(R.layout.activity_streaming);
 
         // initialize view objects from your layout
-        mPublisherViewContainer = (FrameLayout)findViewById(R.id.publisher_container);
         mSubscriberViewContainer = (FrameLayout)findViewById(R.id.subscriber_container);
 
         requestPermissions();
@@ -91,6 +92,15 @@ public class Streaming extends AppCompatActivity
 
         if (mSession != null) {
             mSession.onResume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mSession != null) {
+            mSession.disconnect();
         }
     }
 
@@ -191,7 +201,6 @@ public class Streaming extends AppCompatActivity
         // set publisher video style to fill view
         mPublisher.getRenderer().setStyle(BaseVideoRenderer.STYLE_VIDEO_SCALE,
           BaseVideoRenderer.STYLE_VIDEO_FILL);
-        mPublisherViewContainer.addView(mPublisher.getView());
         if (mPublisher.getView() instanceof GLSurfaceView) {
             ((GLSurfaceView) mPublisher.getView()).setZOrderOnTop(true);
         }
@@ -301,5 +310,9 @@ public class Streaming extends AppCompatActivity
           })
           .setIcon(android.R.drawable.ic_dialog_alert)
           .show();
+    }
+
+    public void onSignalReceived(Session session, String type, String data, Connection connection) {
+        Log.d("signal", "type: " + type + " data: " + data);
     }
 }

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.jinglebiscuits.carcontroller.R;
@@ -33,8 +34,7 @@ public class Driving extends AppCompatActivity
   implements EasyPermissions.PermissionCallbacks,
   WebServiceCoordinator.Listener,
   Session.SessionListener,
-  PublisherKit.PublisherListener,
-  SubscriberKit.SubscriberListener{
+  SubscriberKit.SubscriberListener, SeekBar.OnSeekBarChangeListener {
 
     private static final String LOG_TAG = Driving.class.getSimpleName();
     private static final int RC_SETTINGS_SCREEN_PERM = 123;
@@ -45,11 +45,12 @@ public class Driving extends AppCompatActivity
     private WebServiceCoordinator mWebServiceCoordinator;
 
     private Session mSession;
-    private Publisher mPublisher;
     private Subscriber mSubscriber;
 
-    private FrameLayout mPublisherViewContainer;
     private FrameLayout mSubscriberViewContainer;
+
+    private SeekBar mLeftSeekbar, mRightSeekbar;
+    private int mLeftPower = 0, mRightPower = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +61,13 @@ public class Driving extends AppCompatActivity
         setContentView(R.layout.activity_streaming);
 
         // initialize view objects from your layout
-        mPublisherViewContainer = findViewById(R.id.publisher_container);
         mSubscriberViewContainer = findViewById(R.id.subscriber_container);
+
+        mLeftSeekbar = findViewById(R.id.leftWheel);
+        mRightSeekbar = findViewById(R.id.rightWheel);
+
+        mLeftSeekbar.setOnSeekBarChangeListener(this);
+        mRightSeekbar.setOnSeekBarChangeListener(this);
 
         requestPermissions();
     }
@@ -90,6 +96,15 @@ public class Driving extends AppCompatActivity
 
         if (mSession != null) {
             mSession.onResume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mSession != null) {
+            mSession.disconnect();
         }
     }
 
@@ -182,20 +197,6 @@ public class Driving extends AppCompatActivity
     public void onConnected(Session session) {
 
         Log.d(LOG_TAG, "onConnected: Connected to session: "+session.getSessionId());
-
-        // initialize Publisher and set this object to listen to Publisher events
-        mPublisher = new Publisher.Builder(this).build();
-        mPublisher.setPublisherListener(this);
-
-        // set publisher video style to fill view
-        mPublisher.getRenderer().setStyle(BaseVideoRenderer.STYLE_VIDEO_SCALE,
-          BaseVideoRenderer.STYLE_VIDEO_FILL);
-        mPublisherViewContainer.addView(mPublisher.getView());
-        if (mPublisher.getView() instanceof GLSurfaceView) {
-            ((GLSurfaceView) mPublisher.getView()).setZOrderOnTop(true);
-        }
-
-        mSession.publish(mPublisher);
     }
 
     @Override
@@ -233,30 +234,6 @@ public class Driving extends AppCompatActivity
     public void onError(Session session, OpentokError opentokError) {
         Log.e(LOG_TAG, "onError: "+ opentokError.getErrorDomain() + " : " +
           opentokError.getErrorCode() + " - "+opentokError.getMessage() + " in session: "+ session.getSessionId());
-
-        showOpenTokError(opentokError);
-    }
-
-    /* Publisher Listener methods */
-
-    @Override
-    public void onStreamCreated(PublisherKit publisherKit, Stream stream) {
-
-        Log.d(LOG_TAG, "onStreamCreated: Publisher Stream Created. Own stream "+stream.getStreamId());
-
-    }
-
-    @Override
-    public void onStreamDestroyed(PublisherKit publisherKit, Stream stream) {
-
-        Log.d(LOG_TAG, "onStreamDestroyed: Publisher Stream Destroyed. Own stream "+stream.getStreamId());
-    }
-
-    @Override
-    public void onError(PublisherKit publisherKit, OpentokError opentokError) {
-
-        Log.e(LOG_TAG, "onError: "+opentokError.getErrorDomain() + " : " +
-          opentokError.getErrorCode() +  " - "+opentokError.getMessage());
 
         showOpenTokError(opentokError);
     }
@@ -300,5 +277,41 @@ public class Driving extends AppCompatActivity
           })
           .setIcon(android.R.drawable.ic_dialog_alert)
           .show();
+    }
+
+
+    /**
+     * Notification that the progress level has changed. Clients can use the fromUser parameter
+     * to distinguish user-initiated changes from those that occurred programmatically.
+     *
+     * @param seekBar The SeekBar whose progress has changed
+     * @param progress The current progress level. This will be in the range min..max where min
+     * and max were set by {@link ProgressBar#setMin(int)} and
+     * {@link ProgressBar#setMax(int)}, respectively. (The default values for
+     * min is 0 and max is 100.)
+     * @param fromUser True if the progress change was initiated by the user.
+     */
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (seekBar == mLeftSeekbar) {
+            mLeftPower = ((progress - 50) * 7) / 50;
+        } else if (seekBar == mRightSeekbar) {
+            mRightPower = ((progress - 50) * 7) / 50;
+        }
+
+        int leftSign = mLeftPower < 0 ? 1 : 0;
+        int rightSign = mRightPower < 0 ? 1 : 0;
+        Integer power = (Math.abs(mLeftPower) << 4 + Math.abs(mRightPower)) | (leftSign << 7) | (rightSign << 3);
+        if (mSession != null) {
+            Log.d("sending", power.toString());
+            mSession.sendSignal("control", power.toString());
+        }
+    }
+
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }

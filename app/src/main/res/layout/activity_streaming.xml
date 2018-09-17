@@ -8,24 +8,64 @@
 
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:id="@+id/frameLayout">
 
         <FrameLayout
             android:id="@+id/subscriber_container"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"/>
 
-        <FrameLayout
-            android:id="@+id/publisher_container"
-            android:layout_width="@dimen/publisher_width"
-            android:layout_height="@dimen/publisher_height"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="@dimen/publisher_bottom_margin"
-            android:layout_marginEnd="@dimen/publisher_right_margin"
-            android:layout_marginRight="@dimen/publisher_end_margin"
-            android:padding="@dimen/publisher_padding"
-            android:background="@color/publisher_border_color" />
-
     </FrameLayout>
+
+    <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+        android:layout_width="50dp"
+        android:layout_height="2in"
+        android:id="@+id/leftWheelWrapper"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="32dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintVertical_bias="1.0">
+
+        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+            android:id="@+id/leftWheel"
+            android:layout_width="50dp"
+            android:thumb="@mipmap/ic_launcher"
+            android:layout_height="0dp"
+            android:splitTrack="false"
+            app:seekBarRotation="CW90"/>
+
+        <!-- Rotation: CW90 or CW270 -->
+    </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+
+    <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+        android:layout_width="50dp"
+        android:layout_height="2in"
+        android:id="@+id/rightWheelWrapper"
+        app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintVertical_bias="1.0">
+
+        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+            android:id="@+id/rightWheel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:thumb="@mipmap/ic_launcher"
+            android:splitTrack="false"
+            app:seekBarRotation="CW90"/> <!-- Rotation: CW90 or CW270 -->
+    </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
 </android.support.constraint.ConstraintLayout>
