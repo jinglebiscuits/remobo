@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -80,6 +81,7 @@ public class ConnectToCar extends AppCompatActivity implements EasyPermissions.P
         setContentView(R.layout.activity_connect_to_car);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 //        mButtonLeft.setOnClickListener(new View.OnClickListener() {
 //            public void onClick(View v) {

@@ -7,9 +7,11 @@
     tools:context="com.jinglebiscuits.carcontroller.controllers.Streaming">
 
     <FrameLayout
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:id="@+id/frameLayout">
+        android:id="@+id/frameLayout"
+        app:layout_constraintStart_toEndOf="@+id/leftWheelWrapper"
+        app:layout_constraintEnd_toStartOf="@id/rightWheelWrapper">
 
         <FrameLayout
             android:id="@+id/subscriber_container"
@@ -49,7 +51,7 @@
         android:layout_width="50dp"
         android:layout_height="2in"
         android:id="@+id/rightWheelWrapper"
-        app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="32dp"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="8dp"
