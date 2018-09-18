@@ -1,28 +1,27 @@
 package com.jinglebiscuits.carcontroller.controllers;
 
-import android.opengl.GLSurfaceView;
-import android.support.v7.app.AppCompatActivity;
-import android.support.annotation.NonNull;
 import android.Manifest;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.FrameLayout;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.widget.SeekBar;
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.jinglebiscuits.carcontroller.R;
 import com.jinglebiscuits.carcontroller.model.opentok.OpenTokConfig;
 import com.jinglebiscuits.carcontroller.model.opentok.WebServiceCoordinator;
+import com.opentok.android.BaseVideoRenderer;
 import com.opentok.android.Connection;
-import com.opentok.android.Session;
-import com.opentok.android.Stream;
+import com.opentok.android.OpentokError;
 import com.opentok.android.Publisher;
 import com.opentok.android.PublisherKit;
+import com.opentok.android.Session;
+import com.opentok.android.Stream;
 import com.opentok.android.Subscriber;
-import com.opentok.android.BaseVideoRenderer;
-import com.opentok.android.OpentokError;
 import com.opentok.android.SubscriberKit;
 
 import java.util.List;
@@ -30,7 +29,6 @@ import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-
 
 public class Streaming extends AppCompatActivity
   implements EasyPermissions.PermissionCallbacks,
@@ -175,7 +173,7 @@ public class Streaming extends AppCompatActivity
     @Override
     public void onSessionConnectionDataReady(String apiKey, String sessionId, String token) {
 
-        Log.d(LOG_TAG, "ApiKey: "+apiKey + " SessionId: "+ sessionId + " Token: "+token);
+        Log.d(LOG_TAG, "ApiKey: " + apiKey + " SessionId: " + sessionId + " Token: " + token);
         initializeSession(apiKey, sessionId, token);
     }
 
@@ -193,7 +191,7 @@ public class Streaming extends AppCompatActivity
     @Override
     public void onConnected(Session session) {
 
-        Log.d(LOG_TAG, "onConnected: Connected to session: "+session.getSessionId());
+        Log.d(LOG_TAG, "onConnected: Connected to session: " + session.getSessionId());
 
         // initialize Publisher and set this object to listen to Publisher events
         mPublisher = new Publisher.Builder(this).build();
@@ -203,7 +201,7 @@ public class Streaming extends AppCompatActivity
         mPublisher.getRenderer().setStyle(BaseVideoRenderer.STYLE_VIDEO_SCALE,
           BaseVideoRenderer.STYLE_VIDEO_FILL);
         if (mPublisher.getView() instanceof GLSurfaceView) {
-            ((GLSurfaceView) mPublisher.getView()).setZOrderOnTop(true);
+            ((GLSurfaceView)mPublisher.getView()).setZOrderOnTop(true);
         }
 
         mSession.publish(mPublisher);
@@ -212,13 +210,13 @@ public class Streaming extends AppCompatActivity
     @Override
     public void onDisconnected(Session session) {
 
-        Log.d(LOG_TAG, "onDisconnected: Disconnected from session: "+session.getSessionId());
+        Log.d(LOG_TAG, "onDisconnected: Disconnected from session: " + session.getSessionId());
     }
 
     @Override
     public void onStreamReceived(Session session, Stream stream) {
 
-        Log.d(LOG_TAG, "onStreamReceived: New Stream Received "+stream.getStreamId() + " in session: "+session.getSessionId());
+        Log.d(LOG_TAG, "onStreamReceived: New Stream Received " + stream.getStreamId() + " in session: " + session.getSessionId());
 
         if (mSubscriber == null) {
             mSubscriber = new Subscriber.Builder(this, stream).build();
@@ -232,7 +230,7 @@ public class Streaming extends AppCompatActivity
     @Override
     public void onStreamDropped(Session session, Stream stream) {
 
-        Log.d(LOG_TAG, "onStreamDropped: Stream Dropped: "+stream.getStreamId() +" in session: "+session.getSessionId());
+        Log.d(LOG_TAG, "onStreamDropped: Stream Dropped: " + stream.getStreamId() + " in session: " + session.getSessionId());
 
         if (mSubscriber != null) {
             mSubscriber = null;
@@ -242,8 +240,8 @@ public class Streaming extends AppCompatActivity
 
     @Override
     public void onError(Session session, OpentokError opentokError) {
-        Log.e(LOG_TAG, "onError: "+ opentokError.getErrorDomain() + " : " +
-          opentokError.getErrorCode() + " - "+opentokError.getMessage() + " in session: "+ session.getSessionId());
+        Log.e(LOG_TAG, "onError: " + opentokError.getErrorDomain() + " : " +
+          opentokError.getErrorCode() + " - " + opentokError.getMessage() + " in session: " + session.getSessionId());
 
         showOpenTokError(opentokError);
     }
@@ -253,21 +251,21 @@ public class Streaming extends AppCompatActivity
     @Override
     public void onStreamCreated(PublisherKit publisherKit, Stream stream) {
 
-        Log.d(LOG_TAG, "onStreamCreated: Publisher Stream Created. Own stream "+stream.getStreamId());
+        Log.d(LOG_TAG, "onStreamCreated: Publisher Stream Created. Own stream " + stream.getStreamId());
 
     }
 
     @Override
     public void onStreamDestroyed(PublisherKit publisherKit, Stream stream) {
 
-        Log.d(LOG_TAG, "onStreamDestroyed: Publisher Stream Destroyed. Own stream "+stream.getStreamId());
+        Log.d(LOG_TAG, "onStreamDestroyed: Publisher Stream Destroyed. Own stream " + stream.getStreamId());
     }
 
     @Override
     public void onError(PublisherKit publisherKit, OpentokError opentokError) {
 
-        Log.e(LOG_TAG, "onError: "+opentokError.getErrorDomain() + " : " +
-          opentokError.getErrorCode() +  " - "+opentokError.getMessage());
+        Log.e(LOG_TAG, "onError: " + opentokError.getErrorDomain() + " : " +
+          opentokError.getErrorCode() + " - " + opentokError.getMessage());
 
         showOpenTokError(opentokError);
     }
@@ -275,27 +273,28 @@ public class Streaming extends AppCompatActivity
     @Override
     public void onConnected(SubscriberKit subscriberKit) {
 
-        Log.d(LOG_TAG, "onConnected: Subscriber connected. Stream: "+subscriberKit.getStream().getStreamId());
+        Log.d(LOG_TAG, "onConnected: Subscriber connected. Stream: " + subscriberKit.getStream().getStreamId());
     }
 
     @Override
     public void onDisconnected(SubscriberKit subscriberKit) {
 
-        Log.d(LOG_TAG, "onDisconnected: Subscriber disconnected. Stream: "+subscriberKit.getStream().getStreamId());
+        Log.d(LOG_TAG, "onDisconnected: Subscriber disconnected. Stream: " + subscriberKit.getStream().getStreamId());
     }
 
     @Override
     public void onError(SubscriberKit subscriberKit, OpentokError opentokError) {
 
-        Log.e(LOG_TAG, "onError: "+opentokError.getErrorDomain() + " : " +
-          opentokError.getErrorCode() +  " - "+opentokError.getMessage());
+        Log.e(LOG_TAG, "onError: " + opentokError.getErrorDomain() + " : " +
+          opentokError.getErrorCode() + " - " + opentokError.getMessage());
 
         showOpenTokError(opentokError);
     }
 
     private void showOpenTokError(OpentokError opentokError) {
 
-        Toast.makeText(this, opentokError.getErrorDomain().name() +": " +opentokError.getMessage() + " Please, see the logcat.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, opentokError.getErrorDomain().name() + ": " + opentokError.getMessage() + " Please, see the logcat.",
+          Toast.LENGTH_LONG).show();
         finish();
     }
 

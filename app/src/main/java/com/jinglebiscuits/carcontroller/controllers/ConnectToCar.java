@@ -8,18 +8,15 @@ import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -37,10 +34,8 @@ import com.opentok.android.Stream;
 import com.opentok.android.Subscriber;
 import com.opentok.android.SubscriberKit;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -83,35 +78,6 @@ public class ConnectToCar extends AppCompatActivity implements EasyPermissions.P
         setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-//        mButtonLeft.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                sendMessage(8);
-//            }
-//        });
-//
-//        mButtonRight.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                sendMessage(1);
-//            }
-//        });
-//
-//        mButtonForward.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                sendMessage(9);
-//            }
-//        });
-//
-//        mButtonBackward.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                sendMessage(6);
-//            }
-//        });
-//
-//        mButtonStop.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                sendMessage(0);
-//            }
-//        });
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             new AlertDialog.Builder(this).setTitle("No bluetooth")

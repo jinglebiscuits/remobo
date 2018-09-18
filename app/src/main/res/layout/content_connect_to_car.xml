@@ -8,6 +8,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_connect_to_car"
     tools:context=".controllers.ConnectToCar">
+
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
