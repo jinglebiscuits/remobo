@@ -50,7 +50,7 @@ public class Driving extends AppCompatActivity
     private FrameLayout mSubscriberViewContainer;
 
     private SeekBar mLeftSeekbar, mRightSeekbar;
-    private int mLeftPower = 0, mRightPower = 0;
+    private int mLeftPower = 50, mRightPower = 50;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,31 +279,16 @@ public class Driving extends AppCompatActivity
           .show();
     }
 
-
-    /**
-     * Notification that the progress level has changed. Clients can use the fromUser parameter
-     * to distinguish user-initiated changes from those that occurred programmatically.
-     *
-     * @param seekBar The SeekBar whose progress has changed
-     * @param progress The current progress level. This will be in the range min..max where min
-     * and max were set by {@link ProgressBar#setMin(int)} and
-     * {@link ProgressBar#setMax(int)}, respectively. (The default values for
-     * min is 0 and max is 100.)
-     * @param fromUser True if the progress change was initiated by the user.
-     */
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (seekBar == mLeftSeekbar) {
-            mLeftPower = ((progress - 50) * 7) / 50;
+            mLeftPower = progress;
         } else if (seekBar == mRightSeekbar) {
-            mRightPower = ((progress - 50) * 7) / 50;
+            mRightPower = progress;
         }
 
-        int leftSign = mLeftPower < 0 ? 1 : 0;
-        int rightSign = mRightPower < 0 ? 1 : 0;
-        Integer power = (Math.abs(mLeftPower) << 4 + Math.abs(mRightPower)) | (leftSign << 7) | (rightSign << 3);
         if (mSession != null) {
-            Log.d("sending", power.toString());
-            mSession.sendSignal("control", power.toString());
+            Log.d("sending", mLeftPower + "|" +  mRightPower);
+            mSession.sendSignal("control", mLeftPower + "x" +  mRightPower);
         }
     }
 
@@ -312,6 +297,6 @@ public class Driving extends AppCompatActivity
     }
 
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        seekBar.setProgress(50);
     }
 }

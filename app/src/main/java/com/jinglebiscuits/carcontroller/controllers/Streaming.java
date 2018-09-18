@@ -166,6 +166,7 @@ public class Streaming extends AppCompatActivity
 
         mSession = new Session.Builder(this, apiKey, sessionId).build();
         mSession.setSessionListener(this);
+        mSession.setSignalListener(this);
         mSession.connect(token);
     }
 
